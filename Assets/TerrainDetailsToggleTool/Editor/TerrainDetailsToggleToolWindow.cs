@@ -40,6 +40,7 @@ namespace TerrainDetailsToggleTool
         private const int ToggleWidth = 50;
 
         private static List<Terrain> Terrains;
+        private static bool AllTerrainsDrawDetailsOn;
 
         [MenuItem("Window/TerrainDetailsToggle Tool")]
         private static void OpenToolWindow ()
@@ -63,22 +64,8 @@ namespace TerrainDetailsToggleTool
 
             if (GUILayout.Button("Auto detect Terrains", GUILayout.Width(AutoDetectTerrainsButtonWidth)))
             {
-                // Clean list and detect all Terrain components
-                Terrains.Clear();
-
-                Terrain[] terrainsFound = FindObjectsOfType(typeof(Terrain)) as Terrain[];
-
-                SortedList orderedTerrains = new SortedList();
-
-                for (int i = 0; i < terrainsFound.Length; i++)
-                {
-                    orderedTerrains.Add(terrainsFound[i].gameObject.transform.GetSiblingIndex(), terrainsFound[i]);
-                }
-
-                for (int i = 0; i < terrainsFound.Length; i++)
-                {
-                    Terrains.Add((Terrain)orderedTerrains.GetByIndex(i));
-                }
+                DetectTerrains();
+                CheckAllTerrainsDrawStatus();
             }
 
             EditorGUILayout.Space();
@@ -95,8 +82,22 @@ namespace TerrainDetailsToggleTool
             if (Terrains.Count > 0)
             {
                 EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-                EditorGUILayout.LabelField("All terrains", EditorStyles.label, GUILayout.Width(MaxNameLabelWidth));
-                //drawDetailsAfter = EditorGUILayout.Toggle("", drawDetailsBefore, GUILayout.Width(ToggleWidth));
+                EditorGUILayout.LabelField("All terrains", EditorStyles.boldLabel, GUILayout.Width(MaxNameLabelWidth));
+                drawDetailsBefore = AllTerrainsDrawDetailsOn;
+                drawDetailsAfter = EditorGUILayout.Toggle("", drawDetailsBefore, GUILayout.Width(ToggleWidth));
+                AllTerrainsDrawDetailsOn = drawDetailsAfter;
+
+                if (drawDetailsBefore != drawDetailsAfter)
+                {
+                    repaintNeeded = true;
+
+                    bool newValue = AllTerrainsDrawDetailsOn;
+
+                    for (int i = 0; i < Terrains.Count; i++)
+                    {
+                        Terrains[i].drawTreesAndFoliage = newValue;
+                    }
+                }
                 EditorGUILayout.EndHorizontal();
             }
 
@@ -138,6 +139,45 @@ namespace TerrainDetailsToggleTool
             if (repaintNeeded)
             {
                 SceneView.RepaintAll();
+            }
+        }
+
+        private void DetectTerrains ()
+        {
+            // Clean list and detect all Terrain components
+
+            Terrains.Clear();
+
+            Terrain[] terrainsFound = FindObjectsOfType(typeof(Terrain)) as Terrain[];
+
+            // Get a ordered list of terrains to show in the window
+
+            SortedList orderedTerrains = new SortedList();
+
+            for (int i = 0; i < terrainsFound.Length; i++)
+            {
+                orderedTerrains.Add(terrainsFound[i].gameObject.transform.GetSiblingIndex(), terrainsFound[i]);
+            }
+
+            for (int i = 0; i < terrainsFound.Length; i++)
+            {
+                Terrains.Add((Terrain)orderedTerrains.GetByIndex(i));
+            }
+        }
+
+        private void CheckAllTerrainsDrawStatus ()
+        {
+            // This method sets AllTerrainsDrawDetailsOn to false if all terrains have the Draw details property set to false
+            // In other case, AllTerrainsDrawDetailsOn will be true
+
+            AllTerrainsDrawDetailsOn = false;
+
+            for (int i = 0; !AllTerrainsDrawDetailsOn && i < Terrains.Count; i++)
+            {
+                if (Terrains[i].drawTreesAndFoliage)
+                {
+                    AllTerrainsDrawDetailsOn = true;
+                }
             }
         }
     }
