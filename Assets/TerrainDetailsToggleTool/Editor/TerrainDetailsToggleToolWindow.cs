@@ -38,6 +38,8 @@ namespace TerrainDetailsToggleTool
         private const int TerrainTitleLabelWidth = 200;
         private const int MaxNameLabelWidth = 280;
         private const int ToggleWidth = 50;
+        private const string FirstTimeDetectButtonLabel = "Auto detect Terrains";
+        private const string DetectButtonLabel = "Refresh Terrain list";
 
         private static List<Terrain> Terrains;
         private static bool AllTerrainsDrawDetailsOn;
@@ -61,8 +63,8 @@ namespace TerrainDetailsToggleTool
 
             EditorGUILayout.BeginVertical();
             EditorGUILayout.Space();
-
-            if (GUILayout.Button("Auto detect Terrains", GUILayout.Width(AutoDetectTerrainsButtonWidth)))
+            
+            if (GUILayout.Button((Terrains.Count > 0) ? DetectButtonLabel : FirstTimeDetectButtonLabel, GUILayout.Width(AutoDetectTerrainsButtonWidth)))
             {
                 DetectTerrains();
                 CheckAllTerrainsDrawStatus();
