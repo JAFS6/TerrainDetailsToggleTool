@@ -63,7 +63,7 @@ namespace TerrainDetailsToggleTool
 
             EditorGUILayout.BeginVertical();
             EditorGUILayout.Space();
-            
+
             if (GUILayout.Button((Terrains.Count > 0) ? DetectButtonLabel : FirstTimeDetectButtonLabel, GUILayout.Width(AutoDetectTerrainsButtonWidth)))
             {
                 DetectTerrains();
