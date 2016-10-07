@@ -23,6 +23,7 @@ SOFTWARE.
 */
 using UnityEngine;
 using UnityEditor;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace TerrainDetailsToggleTool
@@ -67,9 +68,16 @@ namespace TerrainDetailsToggleTool
 
                 Terrain[] terrainsFound = FindObjectsOfType(typeof(Terrain)) as Terrain[];
 
+                SortedList orderedTerrains = new SortedList();
+
                 for (int i = 0; i < terrainsFound.Length; i++)
                 {
-                    Terrains.Add(terrainsFound[i]);
+                    orderedTerrains.Add(terrainsFound[i].gameObject.transform.GetSiblingIndex(), terrainsFound[i]);
+                }
+
+                for (int i = 0; i < terrainsFound.Length; i++)
+                {
+                    Terrains.Add((Terrain)orderedTerrains.GetByIndex(i));
                 }
             }
 
