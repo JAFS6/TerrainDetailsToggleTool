@@ -1,5 +1,5 @@
 # TerrainDetailsToggle Tool
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://raw.githubusercontent.com/JAFS6/TerrainDetailsToggleTool/master/LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://raw.githubusercontent.com/JAFS6/TerrainDetailsToggleTool/master/LICENSE.md)
 
 Unity3D editor tool to toggle the Unity's terrain draw details property individually or all at once.
 
